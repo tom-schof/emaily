@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { ObjectId } = require('mongodb');
-const Path = require('path-parser');
+const {Path} = require('path-parser');
 const { URL } = require('url');
 const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
@@ -40,7 +40,7 @@ module.exports = app => {
           {
             _id: new ObjectId(surveyId),
           recipients: {
-            $elemMatch: { email: email, responded: { $ne: true } }
+            $elemMatch: { email: email, responded: false }
             }
           },
           {
@@ -62,7 +62,7 @@ module.exports = app => {
       title,
       subject,
       body,
-      recipients: recipients.split(',').map(email => ({ email: email.trim() })),
+      recipients: recipients.split(',').map(email => ({ email: email.trim().toLowerCase() })),
       _user: req.user.id,
       dateSent: Date.now()
     });
